@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FarmeX Console | Gaming Dashboard PRO</title>
+    <title>FarmeX Console PRO | Dashboard de Alto Rendimiento</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,30 +14,33 @@
 
     <aside class="sidebar">
         <div class="brand">
-            <i class="fas fa-robot" style="color: var(--primary);"></i> FAR M E X
+            <i class="fas fa-microchip" style="color: var(--primary);"></i> FAR M E X <span class="version-tag">PRO</span>
         </div>
 
         <nav class="nav-menu">
             <button class="nav-btn" onclick="showPanel('dashboard', this)">
-                <i class="fas fa-gauge-high"></i> Dashboard
+                <i class="fas fa-gauge-high"></i> Dashboard (Tiempo Real)
             </button>
             <button class="nav-btn" onclick="showPanel('server-config', this)">
-                <i class="fas fa-cogs"></i> Configuración
+                <i class="fas fa-server"></i> Configuración Principal
             </button>
-            <button class="nav-btn" onclick="showPanel('commands', this)">
-                <i class="fas fa-terminal"></i> Comandos
+            <button class="nav-btn" onclick="showPanel('moderation', this)">
+                <i class="fas fa-shield-halved"></i> Moderación & Roles
+            </button>
+            <button class="nav-btn" onclick="showPanel('logs', this)">
+                <i class="fas fa-clipboard-list"></i> Registros del Bot
             </button>
             <button class="nav-btn" onclick="showPanel('premium', this)">
-                <i class="fas fa-crown"></i> Premium
+                <i class="fas fa-crown"></i> Premium PRO
             </button>
             <button class="nav-btn" onclick="showPanel('account', this)">
-                <i class="fas fa-user-circle"></i> Mi Cuenta
+                <i class="fas fa-user-circle"></i> Mi Cuenta & API Keys
             </button>
         </nav>
         
         <div class="sidebar-footer">
             <div class="privacy-link">
-                <a href="#">Soporte</a> | <a href="#">Términos</a>
+                <a href="#">Documentación</a> | <a href="#">Soporte 24/7</a>
             </div>
         </div>
     </aside>
@@ -45,31 +48,40 @@
     <main class="main-content">
         
         <section id="dashboard" class="panel-section">
-            <h1>Estado del Sistema</h1>
-            <p style="margin-bottom: 30px;">Métricas en tiempo real del Bot FarmeX.</p>
+            <h1>Panel de Operación Crítica (Tiempo Real)</h1>
+            <p style="margin-bottom: 30px;">Monitoreo detallado de rendimiento del host y las métricas de FarmeX.</p>
 
-            <div class="status-grid">
-                <div class="metric-card"><i class="fas fa-wave-square"></i><div class="metric-title">Latencia (Ping)</div><div class="metric-value" id="latencyValue">Cargando...</div><div class="metric-status">Tiempo Real</div></div>
-                <div class="metric-card"><i class="fas fa-brain"></i><div class="metric-title">Créditos de IA</div><div class="metric-value" id="iaUsageValue">Cargando...</div><div class="metric-status">Límite: 500</div></div>
-                <div class="metric-card"><i class="fas fa-server"></i><div class="metric-title">Servidores Vinculados</div><div class="metric-value" id="serversValue">Cargando...</div><div class="metric-status">Estatus Operacional</div></div>
-                <div class="metric-card"><i class="fas fa-clock"></i><div class="metric-title">Tiempo Activo</div><div class="metric-value">99.9%</div><div class="metric-status">Último reinicio: 5h 12m</div></div>
+            <h2>Estado del Host y Rendimiento</h2>
+            <div class="status-grid performance-grid">
+                <div class="metric-card"><i class="fas fa-wave-square"></i><div class="metric-title">Latencia Bot (ms)</div><div class="metric-value" id="latencyBot">--</div><div class="metric-status" id="latencyBotStatus">Estable</div></div>
+                <div class="metric-card"><i class="fas fa-database"></i><div class="metric-title">Latencia DB (ms)</div><div class="metric-value" id="latencyDB">--</div><div class="metric-status" id="latencyDBStatus">Conectado</div></div>
+                <div class="metric-card"><i class="fas fa-memory"></i><div class="metric-title">Uso de RAM (GB)</div><div class="metric-value" id="usageRAM">--</div><div class="metric-status">De 8 GB</div></div>
+                <div class="metric-card"><i class="fas fa-microchip"></i><div class="metric-title">Carga de CPU (%)</div><div class="metric-value" id="usageCPU">--</div><div class="metric-status">De 100%</div></div>
             </div>
 
-            <div class="card">
-                <h3>Vincular nuevo Servidor</h3>
-                <p style="margin-bottom: 20px;">Añade FarmeX a tu servidor de Discord. Necesitarás permisos de administrador.</p>
-                <button class="btn btn-primary" onclick="fetchDiscordServers()">
-                    <i class="fab fa-discord"></i> Invitar Bot Ahora
+            <h2>Métricas de Servicio FarmeX</h2>
+            <div class="status-grid service-grid">
+                <div class="metric-card"><i class="fas fa-server"></i><div class="metric-title">Servidores Activos</div><div class="metric-value" id="serversValue">--</div><div class="metric-status">Total vinculados</div></div>
+                <div class="metric-card"><i class="fas fa-users"></i><div class="metric-title">Usuarios Totales</div><div class="metric-value" id="usersValue">--</div><div class="metric-status">En todos los servers</div></div>
+                <div class="metric-card"><i class="fas fa-brain"></i><div class="metric-title">Créditos de IA</div><div class="metric-value" id="iaUsageValue">--</div><div class="metric-status">Restantes del plan</div></div>
+                <div class="metric-card"><i class="fas fa-star"></i><div class="metric-title">Comandos Ejecutados</div><div class="metric-value" id="commandsExecuted">--</div><div class="metric-status">Últimas 24h</div></div>
+            </div>
+
+            <div class="card" style="border-left: 5px solid var(--secondary);">
+                <h3><i class="fab fa-discord"></i> Estado de Conexión</h3>
+                <p style="margin-bottom: 20px;">Utiliza esta función para invitar al Bot a un nuevo servidor de inmediato.</p>
+                <button class="btn btn-secondary-outline" id="inviteBotBtn">
+                    <i class="fab fa-discord"></i> Invitar Bot a un Servidor (OAuth2)
                 </button>
             </div>
         </section>
 
         <section id="server-config" class="panel-section">
-            <h2>Configuración del Bot por Servidor</h2>
+            <h2>Configuración Global del Servidor</h2>
             
             <div class="card">
-                <h3>Selección de Servidor</h3>
-                <p>Elige el servidor que deseas configurar. Esta lista se carga desde tu cuenta de Discord.</p>
+                <h3>Selección de Servidor <i class="fas fa-angle-down"></i></h3>
+                <p>Elige el servidor para el cual aplicarás los cambios. Esta lista se sincroniza en tiempo real con Discord.</p>
                 <div class="form-group" style="margin-top: 20px;">
                     <label class="form-label">Servidor Activo:</label>
                     <select class="form-select" id="configServerSelect">
@@ -79,98 +91,138 @@
             </div>
 
             <div class="card">
-                <h3>Módulo: Bienvenidas y Mensajes</h3>
+                <h3>Módulo: Bienvenidas y Despedidas</h3>
                 <div class="form-group">
                     <label class="form-label">Canal de Bienvenida:</label>
                     <select class="form-select" id="welcomeChannelSelect">
                         <option disabled selected># (Seleccionar canal)</option>
-                        <option value="101"># general</option>
-                        <option value="102"># bienvenidas</option>
-                    </select>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mensaje de Bienvenida (Variables: {usuario}, {server})</label>
+                    <textarea class="form-textarea" rows="3" placeholder="¡Bienvenido {usuario} a {server}!"></textarea>
                 </div>
             </div>
 
             <div class="card">
                 <h3>Módulo: Starboard (Clasificaciones)</h3>
                 <div class="form-group">
-                    <label class="form-label">Mínimo de Estrellas (⭐) para destacar:</label>
-                    <input type="number" class="form-input" id="minStarsInput" value="3" min="1">
-                </div>
-                <div class="form-group">
                     <label class="form-label">Canal de Destacados:</label>
                     <select class="form-select">
                         <option disabled selected># (Seleccionar canal)</option>
-                        <option value="301"># mejores-mensajes</option>
-                        <option value="302"># memes</option>
-                    </select>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mínimo de Estrellas (⭐) para destacar:</label>
+                    <input type="number" class="form-input" id="minStarsInput" value="3" min="1">
                 </div>
             </div>
 
             <button class="btn btn-primary" id="saveConfigBtn">
-                <i class="fas fa-save"></i> Guardar Configuración
+                <i class="fas fa-save"></i> Guardar Configuración del Servidor
             </button>
         </section>
 
-        <section id="commands" class="panel-section">
-            <h2>Lista de Comandos Disponibles</h2>
+        <section id="moderation" class="panel-section">
+            <h2>Configuración de Seguridad y Roles Automáticos</h2>
+            
             <div class="card">
-                <p style="margin-bottom: 15px;">Aquí puedes ver todos los comandos de barra (/) y de texto disponibles. Los comandos Premium están marcados.</p>
-                
-                <div style="background: #242429; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
-                    <div style="font-weight: 700; color: var(--primary);">/chat [prompt]</div>
-                    <div style="font-size: 13px; color: var(--text-muted);">Inicia una conversación con la IA avanzada (Gemini Pro). <span style="color: #ffd700;">(PREMIUM)</span></div>
-                </div>
-
-                <div style="background: #242429; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
-                    <div style="font-weight: 700; color: var(--primary);">/rank</div>
-                    <div style="font-size: 13px; color: var(--text-muted);">Muestra tu nivel de actividad en el servidor.</div>
-                </div>
-                
-                <div style="background: #242429; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
-                    <div style="font-weight: 700; color: var(--primary);">!purge [cantidad]</div>
-                    <div style="font-size: 13px; color: var(--text-muted);">Elimina mensajes rápidamente. (Solo Mods/Admin)</div>
+                <h3>Roles Automáticos al Unirse</h3>
+                <p>Asigna un rol automáticamente a los usuarios nuevos. (Requiere Plan PRO)</p>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label class="form-label">Rol a Asignar:</label>
+                    <select class="form-select">
+                        <option disabled selected>-- (Seleccionar Rol)</option>
+                        <option>Miembro</option>
+                        <option>Verificado</option>
+                    </select>
                 </div>
             </div>
-            <button class="btn btn-secondary-outline">Solicitar Nuevo Comando</button>
+
+            <div class="card">
+                <h3>Filtro Anti-Spam</h3>
+                <div class="form-group">
+                    <label class="form-label">Sensibilidad Anti-Spam (0=Baja, 10=Máxima)</label>
+                    <input type="range" min="0" max="10" value="5" class="form-range" style="width: 100%;">
+                    <div style="color: var(--text-muted); font-size: 12px; margin-top: 5px;">Nivel actual: <span id="spamSensitivity">5</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-gavel"></i> Acciones de Moderación</h3>
+                <p>Envía un *mute* (silencio) o un *ban* (expulsión) directamente desde el panel. (Solo administradores).</p>
+                <div class="form-group">
+                    <label class="form-label">ID de Usuario de Discord:</label>
+                    <input type="text" class="form-input" placeholder="Ej: 123456789012345678">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn btn-secondary-outline" id="muteUserBtn">Mutear Usuario</button>
+                    <button class="btn btn-danger" id="banUserBtn">Banear Usuario</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="logs" class="panel-section">
+            <h2>Registro de Eventos y Auditoría del Bot</h2>
+            <p style="margin-bottom: 20px;">Visualiza todas las acciones del Bot, errores y comandos ejecutados en tiempo real.</p>
+
+            <div class="card">
+                <h3><i class="fas fa-hourglass-start"></i> Últimos Eventos (Refresco en Tiempo Real)</h3>
+                <div class="log-container" id="logContainer" style="height: 400px; overflow-y: scroll; background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 6px;">
+                    <div style="color: var(--text-muted); text-align: center; padding: 50px;">Cargando registros... Esperando conexión en tiempo real (WebSocket).</div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary-outline">Descargar Historial Completo (CSV)</button>
         </section>
 
         <section id="premium" class="panel-section">
-            <h2>Mejora tu Experiencia FarmeX</h2>
-            <p style="margin-bottom: 30px;">Desbloquea funciones avanzadas de IA, límites más altos y soporte prioritario.</p>
+            <h2>Planes de Alto Rendimiento FarmeX PRO</h2>
+            <p style="margin-bottom: 30px;">Funciones de IA avanzadas, rendimiento garantizado y soporte dedicado.</p>
 
             <div class="plan-grid">
                 <div class="plan-card">
-                    <h4>Plan Básico</h4>
+                    <h4>Plan Free</h4>
                     <div class="plan-price">$0.00 <small>/mes</small></div>
                     <ul class="plan-features">
                         <li><i class="fas fa-check"></i> 1 Servidor</li>
                         <li><i class="fas fa-check"></i> Comandos básicos</li>
-                        <li><i class="fas fa-check"></i> 50 créditos de IA/mes</li>
+                        <li><i class="fas fa-times" style="color: var(--danger);"></i> Moderación Avanzada</li>
                     </ul>
-                    <button class="btn btn-secondary-outline">Actual Plan</button>
+                    <button class="btn btn-secondary-outline">Plan Actual</button>
                 </div>
 
                 <div class="plan-card plan-card-featured">
                     <h4>Plan PRO</h4>
-                    <div class="plan-price" style="color: #ffd700;">$9.99 <small style="color: #ccc;">/mes</small></div>
+                    <div class="plan-price" style="color: #ffd700;">$14.99 <small style="color: #ccc;">/mes</small></div>
                     <ul class="plan-features">
                         <li><i class="fas fa-check"></i> Servidores Ilimitados</li>
-                        <li><i class="fas fa-check"></i> IA Avanzada (Gemini Pro)</li>
-                        <li><i class="fas fa-check"></i> 5000 créditos de IA/mes</li>
-                        <li><i class="fas fa-check"></i> Soporte Prioritario</li>
-                        <li><i class="fas fa-check"></i> Comandos exclusivos</li>
+                        <li><i class="fas fa-check"></i> IA Avanzada (Gemini PRO)</li>
+                        <li><i class="fas fa-check"></i> 100% Uptime Garantizado</li>
+                        <li><i class="fas fa-check"></i> Módulos de Roles Automáticos</li>
                     </ul>
-                    <button class="btn btn-primary" style="background: #ffd700; color: #000;">Elegir Plan PRO</button>
+                    <button class="btn btn-primary" id="subscribeBtn" style="background: #ffd700; color: #000;">Suscribirse Ahora</button>
+                </div>
+                
+                <div class="plan-card">
+                    <h4>Plan Empresa</h4>
+                    <div class="plan-price">$99.99 <small>/mes</small></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Todo el Plan PRO</li>
+                        <li><i class="fas fa-check"></i> Hosting Dedicado (Recursos garantizados)</li>
+                        <li><i class="fas fa-check"></i> Bot personalizado con tu marca</li>
+                    </ul>
+                    <button class="btn btn-secondary-outline">Contactar Ventas</button>
                 </div>
             </div>
         </section>
         
         <section id="account" class="panel-section">
-            <h2>Gestión de Cuenta</h2>
+            <h2>Gestión de Cuenta y Credenciales</h2>
             
             <div class="card">
-                <h3>Credenciales</h3>
-                <p>Gestiona tu inicio de sesión y vinculación con servicios externos.</p>
+                <h3>Credenciales y Seguridad</h3>
+                <p>Gestiona el inicio de sesión y tus API Keys personales.</p>
                 
                 <div class="form-group" style="margin-top: 20px;">
                     <label class="form-label">Email de Contacto:</label>
@@ -178,19 +230,25 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Contraseña (Cambiar):</label>
-                    <input type="password" class="form-input" placeholder="Nueva Contraseña">
+                    <label class="form-label">Clave API de FarmeX (Para integraciones externas):</label>
+                    <input type="text" class="form-input" value="1A2B-C3D4-E5F6-G7H8" disabled>
                 </div>
                 
-                <button class="btn btn-secondary-outline" style="margin-bottom: 20px;">Actualizar Contraseña</button>
+                <button class="btn btn-primary" style="width: auto;">Generar Nueva Clave API</button>
             </div>
 
             <div class="card">
-                <h3>Vincular Discord</h3>
-                <p>Para cargar tus servidores y canales, debes vincular tu cuenta de Discord mediante OAuth2.</p>
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px; padding: 10px; background: #2a2a2d; border-radius: 6px;">
-                    <span style="color: var(--primary);">Estado: Vinculado</span>
-                    <button class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 13px;">Desvincular</button>
+                <h3>Servicios de Autenticación</h3>
+                <p>Vincula o desvincula servicios para un acceso rápido. (OAuth2)</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 6px; margin-bottom: 10px;">
+                    <div style="font-weight: 500;"><i class="fab fa-discord"></i> Discord (ID: 1234)</div>
+                    <button class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 13px;" id="disconnectDiscord">Desvincular</button>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--bg-input); border-radius: 6px;">
+                    <div style="font-weight: 500;"><i class="fab fa-google"></i> Google (Email)</div>
+                    <button class="btn btn-secondary-outline" style="width: auto; padding: 8px 15px; font-size: 13px;" id="linkGoogle">Vincular Ahora</button>
                 </div>
             </div>
         </section>
@@ -200,4 +258,4 @@
     <script src="script.js"></script>
 
 </body>
-    </html>
+</html>
