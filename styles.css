@@ -1,111 +1,253 @@
-// ===========================================
-// Lógica de Navegación y Vistas (Panel Switching)
-// ===========================================
-
-function showPanel(panelId, btnElement) {
-    // 1. Ocultar todos los paneles y desactivar botones
-    document.querySelectorAll('.panel-section').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-
-    // 2. Mostrar el panel y activar el botón seleccionado
-    const target = document.getElementById(panelId);
-    if(target) target.classList.add('active');
-    if(btnElement) btnElement.classList.add('active');
+/* =========================================
+   1. VARIABLES Y BASE (FUTURISTA 2.0)
+   ========================================= */
+:root {
+    --bg-body: #050508;       /* Fondo súper oscuro */
+    --bg-sidebar: #0e0e12;    
+    --bg-card: #19191d;       
+    --bg-input: #242429;
+    
+    --primary: #00e676;       /* NEON MENTA/VERDE CIAN */
+    --primary-glow: rgba(0, 230, 118, 0.4);
+    --primary-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+    --primary-hover: #33ff99;
+    
+    --secondary: #5865F2;     
+    --danger: #ff5252;
+    
+    --text-main: #FFFFFF;
+    --text-muted: #b0b0b5;    
+    
+    --border-radius: 6px;
+    --spacing: 20px;          
 }
 
-// ===========================================
-// Lógica de TIEMPO REAL (Ejemplo y Puntos Clave)
-// ===========================================
+/* Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Inicia en el Dashboard
-    showPanel('dashboard', document.querySelector('.nav-btn'));
-
-    // 1. CARGA INICIAL
-    loadInitialData();
-    
-    // 2. ACTUALIZACIÓN EN TIEMPO REAL (Simulada para Latencia)
-    // Aquí conectarías un WebSocket o harías un Polling (setInterval)
-    setInterval(updateRealTimeMetrics, 5000); 
-
-    // 3. LISTENERS
-    document.getElementById('saveConfigBtn').addEventListener('click', saveServerConfiguration);
-    document.getElementById('fetchDiscordServersBtn').addEventListener('click', fetchDiscordServers);
-});
-
-/**
- * 🎯 PUNTO DE CONEXIÓN 1: Cargar la información inicial de la API
- * (Latencia actual, número de servidores, uso de créditos, etc.)
- */
-function loadInitialData() {
-    console.log("-> 📡 Contactando Backend para cargar estado inicial...");
-    
-    // Aquí iría tu fetch/axios para obtener /api/status y /api/config
-    
-    // --- SIMULACIÓN INICIAL ---
-    document.getElementById('latencyValue').textContent = "35ms";
-    document.getElementById('serversValue').textContent = "3 Servidores";
-    document.getElementById('iaUsageValue').textContent = "125 / 500";
-    document.getElementById('configServerSelect').innerHTML = `
-        <option value="server-1">🚀 FarmeX DEV (Actual)</option>
-        <option value="server-2">Servidor de Pruebas</option>
-    `;
-    // -------------------------
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-/**
- * 🎯 PUNTO DE CONEXIÓN 2: Actualizar métricas volátiles (Tiempo Real)
- */
-function updateRealTimeMetrics() {
-    // Simulación de latencia variable
-    const newLatency = Math.floor(Math.random() * (45 - 20 + 1)) + 20;
-    const latencyElement = document.getElementById('latencyValue');
+h1 { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #2a2a2d; }
+h3 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; }
+p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 
-    if (latencyElement) {
-        latencyElement.textContent = `${newLatency}ms`;
-        // Estilo basado en la latencia
-        latencyElement.style.color = newLatency > 40 ? 'var(--danger)' : (newLatency > 30 ? '#ffeb3b' : 'var(--primary)');
-    }
-    
-    // Simulación de uso de IA (si no usas WebSockets)
-    const iaUsageElement = document.getElementById('iaUsageValue');
-    if (iaUsageElement) {
-        let current = parseInt(iaUsageElement.textContent.split(' / ')[0]);
-        current = Math.min(500, current + Math.floor(Math.random() * 2)); // Incremento aleatorio
-        iaUsageElement.textContent = `${current} / 500`;
-    }
+/* =========================================
+   2. SIDEBAR (HUD)
+   ========================================= */
+.sidebar {
+    width: 280px; 
+    background-color: var(--bg-sidebar);
+    height: 100vh;
+    position: fixed;
+    left: 0; top: 0;
+    display: flex; flex-direction: column;
+    border-right: 1px solid #2a2a2d;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    z-index: 1000;
 }
 
-
-/**
- * 🎯 PUNTO DE CONEXIÓN 3: Función para guardar la configuración del servidor
- */
-function saveServerConfiguration() {
-    const serverId = document.getElementById('configServerSelect').value;
-    const welcomeChannel = document.getElementById('welcomeChannelSelect').value;
-    const minStars = document.getElementById('minStarsInput').value;
-
-    console.log(`-> 💾 Enviando configuración para Server ID: ${serverId}`);
-    
-    // Aquí iría tu fetch/axios POST para guardar en Firebase o tu Backend
-    // Ejemplo:
-    // fetch('/api/save-config', { method: 'POST', body: JSON.stringify({ ... }) })
-    
-    alert('Configuración Guardada! (Simulado)');
+.brand {
+    padding: 30px 25px;
+    font-size: 28px; font-weight: 900;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--primary); 
+    text-shadow: 0 0 10px var(--primary-glow);
 }
 
-/**
- * 🎯 PUNTO DE CONEXIÓN 4: Autenticación OAuth2 de Discord
- */
-function fetchDiscordServers() {
-    console.log("-> 🔗 Iniciando flujo de autenticación OAuth2...");
-    
-    // Redirigir al usuario al endpoint de Discord OAuth2
-    // window.location.href = 'TU_ENDPOINT_DE_DISCORD_OAUTH2';
-    
-    alert('Iniciando Autenticación con Discord...');
+.nav-menu { flex: 1; padding: 25px; display: flex; flex-direction: column; gap: 8px; }
+
+.nav-btn {
+    display: flex; align-items: center; gap: 15px;
+    padding: 16px 20px;
+    color: var(--text-muted);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    border: none; background: none; width: 100%; text-align: left; font-size: 15px;
+    transition: all 0.2s;
 }
 
-// -----------------------------------------------------
-// ¡AÑADE AQUÍ TUS FUNCIONES ASÍNCRONAS PARA FETCH DE DATOS REALES!
-// -----------------------------------------------------
+.nav-btn i { font-size: 18px; }
+
+.nav-btn:hover { 
+    background-color: var(--bg-input); 
+    color: var(--text-main);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+.nav-btn.active { 
+    background-color: rgba(0, 230, 118, 0.1); 
+    color: var(--primary); 
+    border: 1px solid var(--primary); 
+    box-shadow: var(--primary-shadow);
+}
+.nav-btn.active i { color: var(--primary); }
+
+/* Footer del Sidebar */
+.sidebar-footer { padding: 15px 25px; border-top: 1px solid #2a2a2d; }
+.privacy-link { text-align: center; font-size: 12px; }
+.privacy-link a { color: var(--text-muted); text-decoration: none; }
+.privacy-link a:hover { color: var(--primary); }
+
+
+/* =========================================
+   3. CONTENIDO PRINCIPAL
+   ========================================= */
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 40px 30px;
+    width: calc(100% - 280px);
+}
+.panel-section { display: none; }
+.panel-section.active { 
+    display: block; 
+    animation: fadeIn 0.4s ease-out; 
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+
+/* =========================================
+   4. DASHBOARD (WIDGETS Y CARDS)
+   ========================================= */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.metric-card {
+    background-color: var(--bg-card);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #2a2a2d;
+    box-shadow: var(--primary-shadow);
+    transition: transform 0.3s;
+}
+.metric-card:hover { transform: translateY(-3px); }
+
+.metric-card i { font-size: 36px; color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 10px var(--primary-glow); }
+.metric-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+.metric-value { font-size: 28px; font-weight: 800; color: var(--text-main); }
+.metric-status { font-size: 12px; margin-top: 10px; color: var(--primary); }
+
+/* Tarjetas Generales */
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    border: 1px solid #2a2a2d;
+    margin-bottom: 25px;
+}
+
+/* =========================================
+   5. FORMULARIOS Y BOTONES
+   ========================================= */
+.form-group { margin-bottom: 25px; }
+.form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
+
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 14px 15px;
+    background-color: var(--bg-input);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: white;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 8px var(--primary-glow); 
+}
+
+/* Botones con estilo Gaming */
+.btn {
+    display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+    padding: 14px 25px;
+    border-radius: 4px;
+    font-weight: 700;
+    border: 2px solid transparent;
+    cursor: pointer;
+    width: 100%; font-size: 15px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-primary { 
+    background-color: var(--primary); 
+    color: var(--bg-body);
+}
+.btn-primary:hover { 
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.btn-danger { background-color: var(--danger); color: white; }
+
+.btn-secondary-outline { 
+    background: none; 
+    border-color: var(--text-muted); 
+    color: var(--text-muted); 
+}
+.btn-secondary-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* =========================================
+   6. PREMIUM/PLANES
+   ========================================= */
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.plan-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid #2a2a2d;
+    transition: all 0.3s;
+}
+
+.plan-card-featured {
+    border: 2px solid var(--primary);
+    box-shadow: var(--primary-shadow);
+    background: linear-gradient(145deg, #131316, #19191d);
+}
+
+.plan-card h4 { font-size: 24px; margin-bottom: 10px; }
+.plan-price { font-size: 40px; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
+.plan-price small { font-size: 16px; color: var(--text-muted); font-weight: 500; }
+.plan-features { list-style: none; margin-bottom: 30px; }
+.plan-features li { 
+    padding: 8px 0; 
+    border-bottom: 1px dashed #2a2a2d; 
+    display: flex; gap: 10px;
+    align-items: center;
+    color: var(--text-muted);
+}
+.plan-features i { color: var(--primary); }
+
+
+/* =========================================
+   7. RESPONSIVE
+   ========================================= */
+@media (max-width: 992px) {
+    .sidebar { width: 100%; position: relative; }
+    .main-content { margin-left: 0; width: 100%; padding: 20px; }
+    .status-grid { grid-template-columns: 1fr 1fr; }
+}
