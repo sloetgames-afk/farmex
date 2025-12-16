@@ -1,254 +1,228 @@
-/* =========================================
-   1. VARIABLES Y BASE (FUTURISTA 2.0)
-   ========================================= */
-:root {
-    --bg-body: #050508;       /* Fondo súper oscuro */
-    --bg-sidebar: #0e0e12;    
-    --bg-card: #19191d;       
-    --bg-input: #242429;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmeX Console | Gaming Dashboard</title>
     
-    --primary: #00e676;       /* NEON MENTA/VERDE CIAN */
-    --primary-glow: rgba(0, 230, 118, 0.4);
-    --primary-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
-    --primary-hover: #33ff99;
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    --secondary: #5865F2;     
-    --danger: #ff5252;
-    
-    --text-main: #FFFFFF;
-    --text-muted: #b0b0b5;    
-    
-    --border-radius: 6px;
-    --spacing: 20px;          
-}
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
-/* Base */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fas fa-robot" style="color: var(--primary);"></i> FAR M E X
+        </div>
 
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    display: flex;
-    min-height: 100vh;
-    overflow-x: hidden;
-}
+        <nav class="nav-menu">
+            <button class="nav-btn" onclick="showPanel('dashboard', this)">
+                <i class="fas fa-gauge-high"></i> Dashboard
+            </button>
+            <button class="nav-btn" onclick="showPanel('server-config', this)">
+                <i class="fas fa-cogs"></i> Configuración
+            </button>
+            <button class="nav-btn" onclick="showPanel('commands', this)">
+                <i class="fas fa-terminal"></i> Comandos
+            </button>
+            <button class="nav-btn" onclick="showPanel('premium', this)">
+                <i class="fas fa-crown"></i> Premium
+            </button>
+            <button class="nav-btn" onclick="showPanel('account', this)">
+                <i class="fas fa-user-circle"></i> Mi Cuenta
+            </button>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="privacy-link">
+                <a href="#">Soporte</a> | <a href="#">Términos</a>
+            </div>
+        </div>
+    </aside>
 
-h1 { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-h2 { font-size: 24px; font-weight: 700; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #2a2a2d; }
-h3 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; }
-p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+    <main class="main-content">
+        
+        <section id="dashboard" class="panel-section active">
+            <h1>Estado del Sistema</h1>
+            <p style="margin-bottom: 30px;">Métricas en tiempo real del Bot FarmeX.</p>
 
-/* =========================================
-   2. SIDEBAR (HUD)
-   ========================================= */
-.sidebar {
-    width: 280px; /* Un poco más ancho */
-    background-color: var(--bg-sidebar);
-    height: 100vh;
-    position: fixed;
-    left: 0; top: 0;
-    display: flex; flex-direction: column;
-    border-right: 1px solid #2a2a2d;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-    z-index: 1000;
-    transition: transform 0.3s ease;
-}
+            <div class="status-grid">
+                
+                <div class="metric-card">
+                    <i class="fas fa-wave-square"></i>
+                    <div class="metric-title">Latencia (Ping)</div>
+                    <div class="metric-value" id="latencyValue">Cargando...</div>
+                    <div class="metric-status">Tiempo Real</div>
+                </div>
 
-.brand {
-    padding: 30px 25px;
-    font-size: 28px; font-weight: 900;
-    color: var(--text-main);
-    border-bottom: 2px solid var(--primary); /* Línea de Neón bajo el logo */
-    text-shadow: 0 0 10px var(--primary-glow);
-}
+                <div class="metric-card">
+                    <i class="fas fa-brain"></i>
+                    <div class="metric-title">Créditos de IA</div>
+                    <div class="metric-value" id="iaUsageValue">Cargando...</div>
+                    <div class="metric-status">Límite: 500</div>
+                </div>
 
-.nav-menu { flex: 1; padding: 25px; display: flex; flex-direction: column; gap: 8px; }
+                <div class="metric-card">
+                    <i class="fas fa-server"></i>
+                    <div class="metric-title">Servidores Vinculados</div>
+                    <div class="metric-value" id="serversValue">Cargando...</div>
+                    <div class="metric-status">Estatus Operacional</div>
+                </div>
 
-.nav-btn {
-    display: flex; align-items: center; gap: 15px;
-    padding: 16px 20px;
-    color: var(--text-muted);
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    cursor: pointer;
-    border: none; background: none; width: 100%; text-align: left; font-size: 15px;
-    transition: all 0.2s;
-}
+                <div class="metric-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="metric-title">Tiempo Activo</div>
+                    <div class="metric-value">99.9%</div>
+                    <div class="metric-status">Último reinicio: 5h 12m</div>
+                </div>
 
-.nav-btn i { font-size: 18px; }
+            </div>
 
-.nav-btn:hover { 
-    background-color: var(--bg-input); 
-    color: var(--text-main);
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
-}
-.nav-btn.active { 
-    background-color: rgba(0, 230, 118, 0.1); 
-    color: var(--primary); 
-    border: 1px solid var(--primary); 
-    box-shadow: var(--primary-shadow);
-}
-.nav-btn.active i { color: var(--primary); }
+            <div class="card">
+                <h3>Vincular nuevo Servidor</h3>
+                <p style="margin-bottom: 20px;">Añade FarmeX a tu servidor de Discord. Necesitarás permisos de administrador.</p>
+                <button class="btn btn-primary" onclick="fetchDiscordServers()">
+                    <i class="fab fa-discord"></i> Invitar Bot Ahora
+                </button>
+            </div>
+        </section>
 
-/* Footer del Sidebar */
-.sidebar-footer { padding: 15px 25px; border-top: 1px solid #2a2a2d; }
-.privacy-link { text-align: center; font-size: 12px; }
-.privacy-link a { color: var(--text-muted); text-decoration: none; }
-.privacy-link a:hover { color: var(--primary); }
+        <section id="server-config" class="panel-section">
+            <h2>Configuración del Bot por Servidor</h2>
+            
+            <div class="card">
+                <h3>Selección de Servidor</h3>
+                <p>Elige el servidor que deseas configurar. Esta lista se carga desde tu cuenta de Discord.</p>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label class="form-label">Servidor Activo:</label>
+                    <select class="form-select" id="configServerSelect">
+                        <option>Cargando servidores...</option>
+                    </select>
+                </div>
+            </div>
 
+            <div class="card">
+                <h3>Módulo: Bienvenidas y Mensajes</h3>
+                <div class="form-group">
+                    <label class="form-label">Canal de Bienvenida:</label>
+                    <select class="form-select" id="welcomeChannelSelect">
+                        <option disabled selected># (Seleccionar canal)</option>
+                        <option value="101"># general</option>
+                        <option value="102"># bienvenidas</option>
+                    </select>
+                </div>
+            </div>
 
-/* =========================================
-   3. CONTENIDO PRINCIPAL
-   ========================================= */
-.main-content {
-    margin-left: 280px;
-    flex: 1;
-    padding: 40px 30px;
-    width: calc(100% - 280px);
-}
-.panel-section { display: none; }
-.panel-section.active { 
-    display: block; 
-    animation: fadeIn 0.4s ease-out; 
-}
+            <div class="card">
+                <h3>Módulo: Starboard (Clasificaciones)</h3>
+                <div class="form-group">
+                    <label class="form-label">Mínimo de Estrellas (⭐) para destacar:</label>
+                    <input type="number" class="form-input" id="minStarsInput" value="3" min="1">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Canal de Destacados:</label>
+                    <select class="form-select">
+                        <option disabled selected># (Seleccionar canal)</option>
+                        <option value="301"># mejores-mensajes</option>
+                        <option value="302"># memes</option>
+                    </select>
+                </div>
+            </div>
 
+            <button class="btn btn-primary" id="saveConfigBtn">
+                <i class="fas fa-save"></i> Guardar Configuración
+            </button>
+        </section>
 
-/* =========================================
-   4. DASHBOARD (WIDGETS Y CARDS)
-   ========================================= */
-.status-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
-}
+        <section id="commands" class="panel-section">
+            <h2>Lista de Comandos Disponibles</h2>
+            <div class="card">
+                <p style="margin-bottom: 15px;">Aquí puedes ver todos los comandos de barra (/) y de texto disponibles. Los comandos Premium están marcados.</p>
+                
+                <div style="background: #242429; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
+                    <div style="font-weight: 700; color: var(--primary);">/chat [prompt]</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">Inicia una conversación con la IA avanzada (Gemini Pro). <span style="color: #ffd700;">(PREMIUM)</span></div>
+                </div>
 
-.metric-card {
-    background-color: var(--bg-card);
-    padding: 25px;
-    border-radius: 10px;
-    border: 1px solid #2a2a2d;
-    box-shadow: var(--primary-shadow);
-    transition: transform 0.3s;
-}
-.metric-card:hover { transform: translateY(-3px); }
+                <div style="background: #242429; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
+                    <div style="font-weight: 700; color: var(--primary);">/rank</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">Muestra tu nivel de actividad en el servidor.</div>
+                </div>
+                
+                <div style="background: #242429; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
+                    <div style="font-weight: 700; color: var(--primary);">!purge [cantidad]</div>
+                    <div style="font-size: 13px; color: var(--text-muted);">Elimina mensajes rápidamente. (Solo Mods/Admin)</div>
+                </div>
+            </div>
+            <button class="btn btn-secondary-outline">Solicitar Nuevo Comando</button>
+        </section>
 
-.metric-card i { font-size: 36px; color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 10px var(--primary-glow); }
-.metric-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-.metric-value { font-size: 28px; font-weight: 800; color: var(--text-main); }
-.metric-status { font-size: 12px; margin-top: 10px; color: var(--primary); }
+        <section id="premium" class="panel-section">
+            <h2>Mejora tu Experiencia FarmeX</h2>
+            <p style="margin-bottom: 30px;">Desbloquea funciones avanzadas de IA, límites más altos y soporte prioritario.</p>
 
-/* Tarjetas Generales */
-.card {
-    background-color: var(--bg-card);
-    border-radius: var(--border-radius);
-    padding: 25px;
-    border: 1px solid #2a2a2d;
-    margin-bottom: 25px;
-}
+            <div class="plan-grid">
+                <div class="plan-card">
+                    <h4>Plan Básico</h4>
+                    <div class="plan-price">$0.00 <small>/mes</small></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 1 Servidor</li>
+                        <li><i class="fas fa-check"></i> Comandos básicos</li>
+                        <li><i class="fas fa-check"></i> 50 créditos de IA/mes</li>
+                    </ul>
+                    <button class="btn btn-secondary-outline">Actual Plan</button>
+                </div>
 
-/* =========================================
-   5. FORMULARIOS Y BOTONES
-   ========================================= */
-.form-group { margin-bottom: 25px; }
-.form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
+                <div class="plan-card plan-card-featured">
+                    <h4>Plan PRO</h4>
+                    <div class="plan-price" style="color: #ffd700;">$9.99 <small style="color: #ccc;">/mes</small></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> Servidores Ilimitados</li>
+                        <li><i class="fas fa-check"></i> IA Avanzada (Gemini Pro)</li>
+                        <li><i class="fas fa-check"></i> 5000 créditos de IA/mes</li>
+                        <li><i class="fas fa-check"></i> Soporte Prioritario</li>
+                        <li><i class="fas fa-check"></i> Comandos exclusivos</li>
+                    </ul>
+                    <button class="btn btn-primary" style="background: #ffd700; color: #000;">Elegir Plan PRO</button>
+                </div>
+            </div>
+        </section>
+        
+        <section id="account" class="panel-section">
+            <h2>Gestión de Cuenta</h2>
+            
+            <div class="card">
+                <h3>Credenciales</h3>
+                <p>Gestiona tu inicio de sesión y vinculación con servicios externos.</p>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label class="form-label">Email de Contacto:</label>
+                    <input type="email" class="form-input" value="usuario@gmail.com" disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contraseña (Cambiar):</label>
+                    <input type="password" class="form-input" placeholder="Nueva Contraseña">
+                </div>
+                
+                <button class="btn btn-secondary-outline" style="margin-bottom: 20px;">Actualizar Contraseña</button>
+            </div>
 
-.form-input, .form-select, .form-textarea {
-    width: 100%;
-    padding: 14px 15px;
-    background-color: var(--bg-input);
-    border: 1px solid #444;
-    border-radius: 4px;
-    color: white;
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
-}
-.form-input:focus, .form-select:focus, .form-textarea:focus { 
-    border-color: var(--primary); 
-    box-shadow: 0 0 8px var(--primary-glow); 
-}
+            <div class="card">
+                <h3>Vincular Discord</h3>
+                <p>Para cargar tus servidores y canales, debes vincular tu cuenta de Discord mediante OAuth2.</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 15px; padding: 10px; background: #2a2a2d; border-radius: 6px;">
+                    <span style="color: var(--primary);">Estado: Vinculado</span>
+                    <button class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 13px;">Desvincular</button>
+                </div>
+            </div>
+        </section>
 
-/* Botones con estilo Gaming */
-.btn {
-    display: inline-flex; justify-content: center; align-items: center; gap: 10px;
-    padding: 14px 25px;
-    border-radius: 4px;
-    font-weight: 700;
-    border: 2px solid transparent;
-    cursor: pointer;
-    width: 100%; font-size: 15px;
-    transition: all 0.3s;
-    text-transform: uppercase;
-}
+    </main>
 
-.btn-primary { 
-    background-color: var(--primary); 
-    color: var(--bg-body);
-}
-.btn-primary:hover { 
-    background-color: var(--primary-hover);
-    box-shadow: 0 0 20px var(--primary-glow);
-}
+    <script src="script.js"></script>
 
-.btn-danger { background-color: var(--danger); color: white; }
-.btn-danger:hover { opacity: 0.9; }
-
-.btn-secondary-outline { 
-    background: none; 
-    border-color: var(--text-muted); 
-    color: var(--text-muted); 
-}
-.btn-secondary-outline:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-}
-
-/* =========================================
-   6. PREMIUM/PLANES
-   ========================================= */
-.plan-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-.plan-card {
-    background-color: var(--bg-card);
-    border-radius: 12px;
-    padding: 30px;
-    border: 1px solid #2a2a2d;
-    transition: all 0.3s;
-}
-
-.plan-card-featured {
-    border: 2px solid var(--primary);
-    box-shadow: var(--primary-shadow);
-    background: linear-gradient(145deg, #131316, #19191d);
-}
-
-.plan-card h4 { font-size: 24px; margin-bottom: 10px; }
-.plan-price { font-size: 40px; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
-.plan-price small { font-size: 16px; color: var(--text-muted); font-weight: 500; }
-.plan-features { list-style: none; margin-bottom: 30px; }
-.plan-features li { 
-    padding: 8px 0; 
-    border-bottom: 1px dashed #2a2a2d; 
-    display: flex; gap: 10px;
-    align-items: center;
-    color: var(--text-muted);
-}
-.plan-features li:last-child { border-bottom: none; }
-.plan-features i { color: var(--primary); }
-
-
-/* =========================================
-   7. RESPONSIVE
-   ========================================= */
-@media (max-width: 992px) {
-    .sidebar { transform: translateX(-100%); width: 100%; height: auto; position: relative; }
-    .main-content { margin-left: 0; width: 100%; padding: 20px; }
-}
+</body>
+</html>
