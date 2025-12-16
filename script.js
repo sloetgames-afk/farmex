@@ -10,40 +10,51 @@ function showPanel(panelId, btnElement) {
     // 2. Mostrar el panel y activar el botón seleccionado
     const target = document.getElementById(panelId);
     if(target) target.classList.add('active');
+    
+    // 3. Activar el botón de navegación
     if(btnElement) btnElement.classList.add('active');
 }
 
 // ===========================================
-// Lógica de TIEMPO REAL (Ejemplo y Puntos Clave)
+// Inicialización y Puntos de Conexión
 // ===========================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicia en el Dashboard
-    showPanel('dashboard', document.querySelector('.nav-btn'));
+    // 1. Inicia en el Dashboard (Activa el primer botón y panel)
+    showPanel('dashboard', document.querySelector('.nav-menu .nav-btn:first-child'));
 
-    // 1. CARGA INICIAL
+    // 2. CARGA INICIAL de datos de la API
     loadInitialData();
     
-    // 2. ACTUALIZACIÓN EN TIEMPO REAL (Simulada para Latencia)
-    // Aquí conectarías un WebSocket o harías un Polling (setInterval)
+    // 3. ACTUALIZACIÓN EN TIEMPO REAL (Polling cada 5 segundos)
     setInterval(updateRealTimeMetrics, 5000); 
 
-    // 3. LISTENERS
-    document.getElementById('saveConfigBtn').addEventListener('click', saveServerConfiguration);
-    document.getElementById('fetchDiscordServersBtn').addEventListener('click', fetchDiscordServers);
+    // 4. LISTENERS DE BOTONES
+    const saveButton = document.getElementById('saveConfigBtn');
+    if (saveButton) {
+        saveButton.addEventListener('click', saveServerConfiguration);
+    }
+    const inviteButton = document.getElementById('fetchDiscordServersBtn');
+    if (inviteButton) {
+        inviteButton.addEventListener('click', fetchDiscordServers);
+    }
 });
 
 /**
- * 🎯 PUNTO DE CONEXIÓN 1: Cargar la información inicial de la API
- * (Latencia actual, número de servidores, uso de créditos, etc.)
+ * 🎯 PUNTO DE CONEXIÓN 1: Cargar la información inicial (Status y Configs)
  */
 function loadInitialData() {
-    console.log("-> 📡 Contactando Backend para cargar estado inicial...");
+    console.log("-> 📡 Consultando Backend para cargar estado inicial...");
     
-    // Aquí iría tu fetch/axios para obtener /api/status y /api/config
+    // --- AQUÍ CONECTAS CON TU API BACKEND ---
+    // fetch('/api/bot-status').then(res => res.json()).then(data => {
+    //     document.getElementById('latencyValue').textContent = data.latency;
+    //     document.getElementById('serversValue').textContent = data.servers + " Servidores";
+    //     // Llenar selectores, etc.
+    // });
     
     // --- SIMULACIÓN INICIAL ---
-    document.getElementById('latencyValue').textContent = "35ms";
+    document.getElementById('latencyValue').textContent = "28ms";
     document.getElementById('serversValue').textContent = "3 Servidores";
     document.getElementById('iaUsageValue').textContent = "125 / 500";
     document.getElementById('configServerSelect').innerHTML = `
@@ -60,18 +71,20 @@ function updateRealTimeMetrics() {
     // Simulación de latencia variable
     const newLatency = Math.floor(Math.random() * (45 - 20 + 1)) + 20;
     const latencyElement = document.getElementById('latencyValue');
+    const iaUsageElement = document.getElementById('iaUsageValue');
+    
+    const primaryColor = '#00e676'; // Var CSS --primary
 
     if (latencyElement) {
         latencyElement.textContent = `${newLatency}ms`;
-        // Estilo basado en la latencia
-        latencyElement.style.color = newLatency > 40 ? 'var(--danger)' : (newLatency > 30 ? '#ffeb3b' : 'var(--primary)');
+        // Cambio de color según la latencia
+        latencyElement.style.color = newLatency > 40 ? '#ff5252' : (newLatency > 30 ? '#ffeb3b' : primaryColor);
     }
     
-    // Simulación de uso de IA (si no usas WebSockets)
-    const iaUsageElement = document.getElementById('iaUsageValue');
+    // Simulación de uso de IA 
     if (iaUsageElement) {
         let current = parseInt(iaUsageElement.textContent.split(' / ')[0]);
-        current = Math.min(500, current + Math.floor(Math.random() * 2)); // Incremento aleatorio
+        current = Math.min(500, current + Math.floor(Math.random() * 2)); 
         iaUsageElement.textContent = `${current} / 500`;
     }
 }
@@ -79,6 +92,7 @@ function updateRealTimeMetrics() {
 
 /**
  * 🎯 PUNTO DE CONEXIÓN 3: Función para guardar la configuración del servidor
+ * Esta función es esencial para el backend de tu Bot.
  */
 function saveServerConfiguration() {
     const serverId = document.getElementById('configServerSelect').value;
@@ -87,25 +101,25 @@ function saveServerConfiguration() {
 
     console.log(`-> 💾 Enviando configuración para Server ID: ${serverId}`);
     
-    // Aquí iría tu fetch/axios POST para guardar en Firebase o tu Backend
-    // Ejemplo:
-    // fetch('/api/save-config', { method: 'POST', body: JSON.stringify({ ... }) })
+    // --- AQUÍ CONECTAS CON TU API POST/PUT PARA GUARDAR LA CONFIGURACIÓN ---
+    // fetch('/api/save-config', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ serverId, welcomeChannel, minStars })
+    // })
     
     alert('Configuración Guardada! (Simulado)');
 }
 
 /**
  * 🎯 PUNTO DE CONEXIÓN 4: Autenticación OAuth2 de Discord
+ * Debes configurar esto en tu Bot y en tu servidor.
  */
 function fetchDiscordServers() {
     console.log("-> 🔗 Iniciando flujo de autenticación OAuth2...");
     
-    // Redirigir al usuario al endpoint de Discord OAuth2
-    // window.location.href = 'TU_ENDPOINT_DE_DISCORD_OAUTH2';
+    // --- DEBES REEMPLAZAR CON TU URL DE REDIRECCIÓN DE DISCORD OAUTH2 ---
+    // window.location.href = 'https://discord.com/oauth2/authorize?client_id=TU_CLIENT_ID&scope=bot%20applications.commands';
     
-    alert('Iniciando Autenticación con Discord...');
+    alert('Iniciando Autenticación con Discord. Necesitas configurar la URL de redirección.');
 }
-
-// -----------------------------------------------------
-// ¡AÑADE AQUÍ TUS FUNCIONES ASÍNCRONAS PARA FETCH DE DATOS REALES!
-// -----------------------------------------------------
