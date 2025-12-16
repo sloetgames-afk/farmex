@@ -1,8 +1,8 @@
 /* =========================================
-   1. VARIABLES Y BASE (FUTURISTA 2.0)
+   1. VARIABLES Y BASE (FUTURISTA PRO)
    ========================================= */
 :root {
-    --bg-body: #050508;       /* Fondo súper oscuro */
+    --bg-body: #050508;       
     --bg-sidebar: #0e0e12;    
     --bg-card: #19191d;       
     --bg-input: #242429;
@@ -12,13 +12,14 @@
     --primary-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
     --primary-hover: #33ff99;
     
-    --secondary: #5865F2;     
+    --secondary: #5865F2;     /* Azul Discord */
     --danger: #ff5252;
+    --warning: #ffb300;
     
     --text-main: #FFFFFF;
     --text-muted: #b0b0b5;    
     
-    --border-radius: 6px;
+    --border-radius: 8px;
     --spacing: 20px;          
 }
 
@@ -34,8 +35,8 @@ body {
     overflow-x: hidden;
 }
 
-h1 { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-h2 { font-size: 24px; font-weight: 700; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #2a2a2d; }
+h1 { font-size: 32px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); }
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #2a2a2d; color: var(--text-muted); }
 h3 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; }
 p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 
@@ -43,35 +44,44 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
    2. SIDEBAR (HUD)
    ========================================= */
 .sidebar {
-    width: 280px; 
+    width: 300px; /* Un poco más ancho */
     background-color: var(--bg-sidebar);
     height: 100vh;
     position: fixed;
     left: 0; top: 0;
     display: flex; flex-direction: column;
-    border-right: 1px solid #2a2a2d;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    border-right: 3px solid var(--primary); /* Énfasis en el borde */
+    box-shadow: 2px 0 20px rgba(0,0,0,0.7);
     z-index: 1000;
 }
 
 .brand {
     padding: 30px 25px;
-    font-size: 28px; font-weight: 900;
+    font-size: 30px; font-weight: 900;
     color: var(--text-main);
-    border-bottom: 2px solid var(--primary); 
-    text-shadow: 0 0 10px var(--primary-glow);
+    border-bottom: 1px solid #2a2a2d; 
+    text-shadow: 0 0 15px var(--primary-glow);
+}
+.version-tag {
+    font-size: 12px;
+    background: var(--warning);
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 5px;
+    font-weight: 700;
 }
 
 .nav-menu { flex: 1; padding: 25px; display: flex; flex-direction: column; gap: 8px; }
 
 .nav-btn {
     display: flex; align-items: center; gap: 15px;
-    padding: 16px 20px;
+    padding: 18px 20px; /* Más padding para más profesionalismo */
     color: var(--text-muted);
     border-radius: var(--border-radius);
     font-weight: 600;
     cursor: pointer;
-    border: none; background: none; width: 100%; text-align: left; font-size: 15px;
+    border: none; background: none; width: 100%; text-align: left; font-size: 16px;
     transition: all 0.2s;
 }
 
@@ -80,17 +90,15 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 .nav-btn:hover { 
     background-color: var(--bg-input); 
     color: var(--text-main);
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
 }
 .nav-btn.active { 
-    background-color: rgba(0, 230, 118, 0.1); 
+    background-color: rgba(0, 230, 118, 0.15); 
     color: var(--primary); 
-    border: 1px solid var(--primary); 
+    border-left: 5px solid var(--primary);
     box-shadow: var(--primary-shadow);
 }
 .nav-btn.active i { color: var(--primary); }
 
-/* Footer del Sidebar */
 .sidebar-footer { padding: 15px 25px; border-top: 1px solid #2a2a2d; }
 .privacy-link { text-align: center; font-size: 12px; }
 .privacy-link a { color: var(--text-muted); text-decoration: none; }
@@ -101,88 +109,113 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
    3. CONTENIDO PRINCIPAL
    ========================================= */
 .main-content {
-    margin-left: 280px;
+    margin-left: 300px;
     flex: 1;
     padding: 40px 30px;
-    width: calc(100% - 280px);
+    width: calc(100% - 300px);
 }
 .panel-section { display: none; }
 .panel-section.active { 
     display: block; 
-    animation: fadeIn 0.4s ease-out; 
+    animation: fadeIn 0.5s ease-out; 
 }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 
 /* =========================================
-   4. DASHBOARD (WIDGETS Y CARDS)
+   4. DASHBOARD (WIDGETS Y TIEMPO REAL)
    ========================================= */
 .status-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 25px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .metric-card {
     background-color: var(--bg-card);
-    padding: 25px;
-    border-radius: 10px;
-    border: 1px solid #2a2a2d;
-    box-shadow: var(--primary-shadow);
-    transition: transform 0.3s;
-}
-.metric-card:hover { transform: translateY(-3px); }
-
-.metric-card i { font-size: 36px; color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 10px var(--primary-glow); }
-.metric-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-.metric-value { font-size: 28px; font-weight: 800; color: var(--text-main); }
-.metric-status { font-size: 12px; margin-top: 10px; color: var(--primary); }
-
-/* Tarjetas Generales */
-.card {
-    background-color: var(--bg-card);
+    padding: 30px 25px;
     border-radius: var(--border-radius);
-    padding: 25px;
-    border: 1px solid #2a2a2d;
-    margin-bottom: 25px;
+    border: 1px solid #333;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
 }
+.metric-card::before { /* Efecto de luz futurista */
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+    transition: width 0.5s;
+    width: 100%; /* Siempre activo para mostrar el estado */
+}
+.metric-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+
+.metric-card i { font-size: 30px; color: var(--primary); margin-bottom: 15px; text-shadow: 0 0 8px var(--primary-glow); }
+.metric-title { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+.metric-value { font-size: 32px; font-weight: 900; color: var(--text-main); }
+.metric-status { font-size: 12px; margin-top: 10px; font-weight: 500; }
+
+.performance-grid .metric-card:nth-child(1) .metric-status { color: var(--primary); }
+.performance-grid .metric-card:nth-child(4) .metric-status { color: var(--warning); }
+
+
+/* LOGS */
+.log-line {
+    font-family: monospace;
+    font-size: 13px;
+    padding: 3px 0;
+    border-bottom: 1px dotted #18181c;
+}
+.log-timestamp { color: var(--text-muted); margin-right: 10px; }
+.log-error { color: var(--danger); }
+.log-command { color: var(--primary); }
+.log-info { color: #5865F2; }
+
 
 /* =========================================
    5. FORMULARIOS Y BOTONES
    ========================================= */
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    border: 1px solid #2a2a2d;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
 .form-group { margin-bottom: 25px; }
 .form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
 
 .form-input, .form-select, .form-textarea {
     width: 100%;
-    padding: 14px 15px;
+    padding: 15px 18px;
     background-color: var(--bg-input);
     border: 1px solid #444;
     border-radius: 4px;
     color: white;
-    font-size: 15px;
+    font-size: 16px;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-    appearance: none;
 }
 .form-input:focus, .form-select:focus, .form-textarea:focus { 
     border-color: var(--primary); 
-    box-shadow: 0 0 8px var(--primary-glow); 
+    box-shadow: 0 0 10px var(--primary-glow); 
 }
+.form-textarea { resize: vertical; }
 
-/* Botones con estilo Gaming */
 .btn {
     display: inline-flex; justify-content: center; align-items: center; gap: 10px;
-    padding: 14px 25px;
+    padding: 16px 28px;
     border-radius: 4px;
     font-weight: 700;
     border: 2px solid transparent;
     cursor: pointer;
-    width: 100%; font-size: 15px;
+    width: 100%; font-size: 16px;
     transition: all 0.3s;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .btn-primary { 
@@ -191,11 +224,10 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 }
 .btn-primary:hover { 
     background-color: var(--primary-hover);
-    box-shadow: 0 0 20px var(--primary-glow);
+    box-shadow: 0 0 25px var(--primary-glow);
 }
 
 .btn-danger { background-color: var(--danger); color: white; }
-
 .btn-secondary-outline { 
     background: none; 
     border-color: var(--text-muted); 
@@ -205,6 +237,7 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
     border-color: var(--primary);
     color: var(--primary);
 }
+
 
 /* =========================================
    6. PREMIUM/PLANES
@@ -224,17 +257,17 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 }
 
 .plan-card-featured {
-    border: 2px solid var(--primary);
-    box-shadow: var(--primary-shadow);
-    background: linear-gradient(145deg, #131316, #19191d);
+    border: 3px solid #ffd700; /* Oro */
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    background: linear-gradient(145deg, #201f19 0%, #19191d 100%);
 }
 
 .plan-card h4 { font-size: 24px; margin-bottom: 10px; }
-.plan-price { font-size: 40px; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
-.plan-price small { font-size: 16px; color: var(--text-muted); font-weight: 500; }
+.plan-price { font-size: 44px; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
+.plan-price small { font-size: 18px; color: var(--text-muted); font-weight: 500; }
 .plan-features { list-style: none; margin-bottom: 30px; }
 .plan-features li { 
-    padding: 8px 0; 
+    padding: 10px 0; 
     border-bottom: 1px dashed #2a2a2d; 
     display: flex; gap: 10px;
     align-items: center;
@@ -242,12 +275,11 @@ p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
 }
 .plan-features i { color: var(--primary); }
 
-
 /* =========================================
    7. RESPONSIVE
    ========================================= */
 @media (max-width: 992px) {
     .sidebar { width: 100%; position: relative; }
     .main-content { margin-left: 0; width: 100%; padding: 20px; }
-    .status-grid { grid-template-columns: 1fr 1fr; }
+    .status-grid { grid-template-columns: 1fr; }
 }
