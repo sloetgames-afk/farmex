@@ -1,0 +1,135 @@
+// ===========================================
+// Lógica de Navegación y Vistas (Panel Switching)
+// ===========================================
+
+function showPanel(panelId, btnElement) {
+    // 1. Ocultar todos los paneles y desactivar botones
+    document.querySelectorAll('.panel-section').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    // 2. Mostrar el panel y activar el botón seleccionado
+    const target = document.getElementById(panelId);
+    if(target) target.classList.add('active');
+    if(btnElement) btnElement.classList.add('active');
+
+    // 3. Cerrar menú móvil si está abierto
+    closeMobileMenu();
+}
+
+
+// ===========================================
+// Lógica de Menú Móvil (Hamburguesa)
+// ===========================================
+
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const menuToggle = document.getElementById('menuToggle');
+
+function closeMobileMenu() {
+    if(window.innerWidth <= 992) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    }
+}
+
+menuToggle.addEventListener('click', () => {
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+});
+
+overlay.addEventListener('click', closeMobileMenu);
+
+
+// ===========================================
+// Lógica de TIEMPO REAL (Esquema de implementación)
+// ¡Aquí va el código que comunica con tu Backend!
+// ===========================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Cargar el estado inicial
+    loadBotStatus();
+    
+    // 2. Simular/Implementar la conexión en tiempo real (Polling cada 5s)
+    setInterval(updateRealTimeData, 5000); 
+
+    // Listener para el botón de Guardar Cambios
+    const saveButton = document.querySelector('#server-config .btn-primary');
+    if (saveButton) {
+        saveButton.addEventListener('click', saveServerConfig);
+    }
+});
+
+/**
+ * [IMPLEMENTAR] Carga los datos iniciales (Latencia, IA, Servidores) de tu API.
+ */
+async function loadBotStatus() {
+    console.log("-> 📡 Consultando la API de FarmeX para el estado inicial...");
+    
+    // --- LÓGICA DE TU API DISCORD/FIREBASE VA AQUÍ ---
+    // try {
+    //     const response = await fetch('/api/bot-status'); 
+    //     const data = await response.json();
+    //     
+    //     document.querySelector('.app-grid .app-card:nth-child(1) .app-status').textContent = data.latency;
+    //     document.querySelector('.app-grid .app-card:nth-child(2) .app-status').textContent = data.ia_credits;
+    //     // ... y llenar los selectores con los canales de Discord.
+    // } catch (error) {
+    //     console.error("Error al cargar estado del bot:", error);
+    // }
+
+    // Simulación de actualización inicial:
+    document.querySelector('.app-grid .app-card:nth-child(2) .app-status').textContent = "125 / 500"; 
+    document.querySelector('.app-grid .app-card:nth-child(1) .app-status').textContent = "28ms"; 
+}
+
+/**
+ * [IMPLEMENTAR] Guarda la configuración del Bot en tu Base de Datos.
+ */
+function saveServerConfig() {
+    const welcomeChannel = document.querySelector('#server-config select:nth-child(2)').value;
+    const iaChannels = Array.from(document.querySelector('#server-config select[multiple]').options)
+                          .filter(option => option.selected)
+                          .map(option => option.value);
+    const starMin = document.querySelector('#server-config input[type="number"]').value;
+
+    console.log(`-> 💾 Guardando configuración:`);
+    console.log(`Canal de Bienvenida: ${welcomeChannel}`);
+    console.log(`Canales IA: ${iaChannels.join(', ')}`);
+    console.log(`Mínimo de Estrellas: ${starMin}`);
+    
+    // --- LÓGICA DE TU API PARA GUARDAR DATOS VA AQUÍ (POST/PUT) ---
+    // fetch('/api/save-config', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ welcomeChannel, iaChannels, starMin })
+    // }).then(() => {
+    //     alert('Configuración guardada en tiempo real.');
+    // }).catch(error => console.error("Error al guardar:", error));
+    
+    alert('Configuración guardada exitosamente (Simulado).');
+}
+
+/**
+ * [IMPLEMENTAR] Actualiza datos que cambian constantemente.
+ */
+function updateRealTimeData() {
+    // Simulación de latencia que cambia en tiempo real
+    const newLatency = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
+    const latencyElement = document.querySelector('.app-grid .app-card:nth-child(1) .app-status');
+    const iaUsageElement = document.querySelector('.app-grid .app-card:nth-child(2) .app-status');
+
+    if (latencyElement) {
+        latencyElement.textContent = `${newLatency}ms`;
+        // Cambio de color según la latencia
+        latencyElement.style.color = newLatency > 35 ? '#FF4136' : (newLatency > 30 ? '#FFD700' : 'var(--primary)');
+    }
+
+    // Simulación de uso de IA (solo para ejemplo en tiempo real)
+    if (iaUsageElement) {
+        let current = parseInt(iaUsageElement.textContent.split(' / ')[0]);
+        if (current < 500) {
+            current += 1; // Simular incremento de uso
+            iaUsageElement.textContent = `${current} / 500`;
+        }
+    }
+}
