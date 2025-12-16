@@ -1,135 +1,254 @@
-// ===========================================
-// Lógica de Navegación y Vistas (Panel Switching)
-// ===========================================
+/* =========================================
+   1. VARIABLES Y BASE (FUTURISTA 2.0)
+   ========================================= */
+:root {
+    --bg-body: #050508;       /* Fondo súper oscuro */
+    --bg-sidebar: #0e0e12;    
+    --bg-card: #19191d;       
+    --bg-input: #242429;
+    
+    --primary: #00e676;       /* NEON MENTA/VERDE CIAN */
+    --primary-glow: rgba(0, 230, 118, 0.4);
+    --primary-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+    --primary-hover: #33ff99;
+    
+    --secondary: #5865F2;     
+    --danger: #ff5252;
+    
+    --text-main: #FFFFFF;
+    --text-muted: #b0b0b5;    
+    
+    --border-radius: 6px;
+    --spacing: 20px;          
+}
 
-function showPanel(panelId, btnElement) {
-    // 1. Ocultar todos los paneles y desactivar botones
-    document.querySelectorAll('.panel-section').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+/* Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-    // 2. Mostrar el panel y activar el botón seleccionado
-    const target = document.getElementById(panelId);
-    if(target) target.classList.add('active');
-    if(btnElement) btnElement.classList.add('active');
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
 
-    // 3. Cerrar menú móvil si está abierto
-    closeMobileMenu();
+h1 { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #2a2a2d; }
+h3 { font-size: 18px; font-weight: 700; margin-bottom: 15px; color: var(--primary); text-transform: uppercase; }
+p { color: var(--text-muted); font-size: 14px; line-height: 1.6; }
+
+/* =========================================
+   2. SIDEBAR (HUD)
+   ========================================= */
+.sidebar {
+    width: 280px; /* Un poco más ancho */
+    background-color: var(--bg-sidebar);
+    height: 100vh;
+    position: fixed;
+    left: 0; top: 0;
+    display: flex; flex-direction: column;
+    border-right: 1px solid #2a2a2d;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.brand {
+    padding: 30px 25px;
+    font-size: 28px; font-weight: 900;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--primary); /* Línea de Neón bajo el logo */
+    text-shadow: 0 0 10px var(--primary-glow);
+}
+
+.nav-menu { flex: 1; padding: 25px; display: flex; flex-direction: column; gap: 8px; }
+
+.nav-btn {
+    display: flex; align-items: center; gap: 15px;
+    padding: 16px 20px;
+    color: var(--text-muted);
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    border: none; background: none; width: 100%; text-align: left; font-size: 15px;
+    transition: all 0.2s;
+}
+
+.nav-btn i { font-size: 18px; }
+
+.nav-btn:hover { 
+    background-color: var(--bg-input); 
+    color: var(--text-main);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+}
+.nav-btn.active { 
+    background-color: rgba(0, 230, 118, 0.1); 
+    color: var(--primary); 
+    border: 1px solid var(--primary); 
+    box-shadow: var(--primary-shadow);
+}
+.nav-btn.active i { color: var(--primary); }
+
+/* Footer del Sidebar */
+.sidebar-footer { padding: 15px 25px; border-top: 1px solid #2a2a2d; }
+.privacy-link { text-align: center; font-size: 12px; }
+.privacy-link a { color: var(--text-muted); text-decoration: none; }
+.privacy-link a:hover { color: var(--primary); }
+
+
+/* =========================================
+   3. CONTENIDO PRINCIPAL
+   ========================================= */
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 40px 30px;
+    width: calc(100% - 280px);
+}
+.panel-section { display: none; }
+.panel-section.active { 
+    display: block; 
+    animation: fadeIn 0.4s ease-out; 
 }
 
 
-// ===========================================
-// Lógica de Menú Móvil (Hamburguesa)
-// ===========================================
-
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const menuToggle = document.getElementById('menuToggle');
-
-function closeMobileMenu() {
-    if(window.innerWidth <= 992) {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-    }
+/* =========================================
+   4. DASHBOARD (WIDGETS Y CARDS)
+   ========================================= */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
 }
 
-menuToggle.addEventListener('click', () => {
-    sidebar.classList.add('active');
-    overlay.classList.add('active');
-});
+.metric-card {
+    background-color: var(--bg-card);
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #2a2a2d;
+    box-shadow: var(--primary-shadow);
+    transition: transform 0.3s;
+}
+.metric-card:hover { transform: translateY(-3px); }
 
-overlay.addEventListener('click', closeMobileMenu);
+.metric-card i { font-size: 36px; color: var(--primary); margin-bottom: 10px; text-shadow: 0 0 10px var(--primary-glow); }
+.metric-title { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
+.metric-value { font-size: 28px; font-weight: 800; color: var(--text-main); }
+.metric-status { font-size: 12px; margin-top: 10px; color: var(--primary); }
 
-
-// ===========================================
-// Lógica de TIEMPO REAL (Esquema de implementación)
-// ¡Aquí va el código que comunica con tu Backend!
-// ===========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Cargar el estado inicial
-    loadBotStatus();
-    
-    // 2. Simular/Implementar la conexión en tiempo real (Polling cada 5s)
-    setInterval(updateRealTimeData, 5000); 
-
-    // Listener para el botón de Guardar Cambios
-    const saveButton = document.querySelector('#server-config .btn-primary');
-    if (saveButton) {
-        saveButton.addEventListener('click', saveServerConfig);
-    }
-});
-
-/**
- * [IMPLEMENTAR] Carga los datos iniciales (Latencia, IA, Servidores) de tu API.
- */
-async function loadBotStatus() {
-    console.log("-> 📡 Consultando la API de FarmeX para el estado inicial...");
-    
-    // --- LÓGICA DE TU API DISCORD/FIREBASE VA AQUÍ ---
-    // try {
-    //     const response = await fetch('/api/bot-status'); 
-    //     const data = await response.json();
-    //     
-    //     document.querySelector('.app-grid .app-card:nth-child(1) .app-status').textContent = data.latency;
-    //     document.querySelector('.app-grid .app-card:nth-child(2) .app-status').textContent = data.ia_credits;
-    //     // ... y llenar los selectores con los canales de Discord.
-    // } catch (error) {
-    //     console.error("Error al cargar estado del bot:", error);
-    // }
-
-    // Simulación de actualización inicial:
-    document.querySelector('.app-grid .app-card:nth-child(2) .app-status').textContent = "125 / 500"; 
-    document.querySelector('.app-grid .app-card:nth-child(1) .app-status').textContent = "28ms"; 
+/* Tarjetas Generales */
+.card {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    border: 1px solid #2a2a2d;
+    margin-bottom: 25px;
 }
 
-/**
- * [IMPLEMENTAR] Guarda la configuración del Bot en tu Base de Datos.
- */
-function saveServerConfig() {
-    const welcomeChannel = document.querySelector('#server-config select:nth-child(2)').value;
-    const iaChannels = Array.from(document.querySelector('#server-config select[multiple]').options)
-                          .filter(option => option.selected)
-                          .map(option => option.value);
-    const starMin = document.querySelector('#server-config input[type="number"]').value;
+/* =========================================
+   5. FORMULARIOS Y BOTONES
+   ========================================= */
+.form-group { margin-bottom: 25px; }
+.form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main); }
 
-    console.log(`-> 💾 Guardando configuración:`);
-    console.log(`Canal de Bienvenida: ${welcomeChannel}`);
-    console.log(`Canales IA: ${iaChannels.join(', ')}`);
-    console.log(`Mínimo de Estrellas: ${starMin}`);
-    
-    // --- LÓGICA DE TU API PARA GUARDAR DATOS VA AQUÍ (POST/PUT) ---
-    // fetch('/api/save-config', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ welcomeChannel, iaChannels, starMin })
-    // }).then(() => {
-    //     alert('Configuración guardada en tiempo real.');
-    // }).catch(error => console.error("Error al guardar:", error));
-    
-    alert('Configuración guardada exitosamente (Simulado).');
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 14px 15px;
+    background-color: var(--bg-input);
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: white;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { 
+    border-color: var(--primary); 
+    box-shadow: 0 0 8px var(--primary-glow); 
 }
 
-/**
- * [IMPLEMENTAR] Actualiza datos que cambian constantemente.
- */
-function updateRealTimeData() {
-    // Simulación de latencia que cambia en tiempo real
-    const newLatency = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
-    const latencyElement = document.querySelector('.app-grid .app-card:nth-child(1) .app-status');
-    const iaUsageElement = document.querySelector('.app-grid .app-card:nth-child(2) .app-status');
+/* Botones con estilo Gaming */
+.btn {
+    display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+    padding: 14px 25px;
+    border-radius: 4px;
+    font-weight: 700;
+    border: 2px solid transparent;
+    cursor: pointer;
+    width: 100%; font-size: 15px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
 
-    if (latencyElement) {
-        latencyElement.textContent = `${newLatency}ms`;
-        // Cambio de color según la latencia
-        latencyElement.style.color = newLatency > 35 ? '#FF4136' : (newLatency > 30 ? '#FFD700' : 'var(--primary)');
-    }
+.btn-primary { 
+    background-color: var(--primary); 
+    color: var(--bg-body);
+}
+.btn-primary:hover { 
+    background-color: var(--primary-hover);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
 
-    // Simulación de uso de IA (solo para ejemplo en tiempo real)
-    if (iaUsageElement) {
-        let current = parseInt(iaUsageElement.textContent.split(' / ')[0]);
-        if (current < 500) {
-            current += 1; // Simular incremento de uso
-            iaUsageElement.textContent = `${current} / 500`;
-        }
-    }
+.btn-danger { background-color: var(--danger); color: white; }
+.btn-danger:hover { opacity: 0.9; }
+
+.btn-secondary-outline { 
+    background: none; 
+    border-color: var(--text-muted); 
+    color: var(--text-muted); 
+}
+.btn-secondary-outline:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* =========================================
+   6. PREMIUM/PLANES
+   ========================================= */
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.plan-card {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid #2a2a2d;
+    transition: all 0.3s;
+}
+
+.plan-card-featured {
+    border: 2px solid var(--primary);
+    box-shadow: var(--primary-shadow);
+    background: linear-gradient(145deg, #131316, #19191d);
+}
+
+.plan-card h4 { font-size: 24px; margin-bottom: 10px; }
+.plan-price { font-size: 40px; font-weight: 900; color: var(--text-main); margin-bottom: 20px; }
+.plan-price small { font-size: 16px; color: var(--text-muted); font-weight: 500; }
+.plan-features { list-style: none; margin-bottom: 30px; }
+.plan-features li { 
+    padding: 8px 0; 
+    border-bottom: 1px dashed #2a2a2d; 
+    display: flex; gap: 10px;
+    align-items: center;
+    color: var(--text-muted);
+}
+.plan-features li:last-child { border-bottom: none; }
+.plan-features i { color: var(--primary); }
+
+
+/* =========================================
+   7. RESPONSIVE
+   ========================================= */
+@media (max-width: 992px) {
+    .sidebar { transform: translateX(-100%); width: 100%; height: auto; position: relative; }
+    .main-content { margin-left: 0; width: 100%; padding: 20px; }
 }
